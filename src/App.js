@@ -1,25 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Profile from './pages/Profile';
+import Explore from './pages/Explore';
+import Projects from './pages/Projects';
+import GlobalStyles from './styles/GlobalStyle';
+import Typography from './styles/Typography';
+import { ThemeProvider } from 'styled-components';
+import { light, dark } from './styles/Themes'
+import Login from './pages/Login';
 
-function App() {
+export default function App() {
+
+  const [theme, setTheme] = useState('d');
+
+  const toggleTheme = (currentTheme) => {
+    if (currentTheme === 'l') {
+      setTheme('d');
+    } else {
+      setTheme('l');
+    }
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme === 'l' ? light : dark}>
+      <GlobalStyles />
+      <Typography />
+      <Router>
+        <Navbar theme={theme} toggleTheme={toggleTheme} />
+        <Switch>
+          <Route path="/profile">
+            <Profile />
+          </Route>
+          <Route path="/projects">
+            <Projects />
+          </Route>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route path="/">
+            <Explore />
+          </Route>
+        </Switch>
+      </Router>
+    </ThemeProvider>
   );
 }
-
-export default App;
