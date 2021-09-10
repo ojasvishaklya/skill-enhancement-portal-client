@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 import Comments from './Comments';
+import { Link } from 'react-router-dom';
 
 
 
@@ -56,6 +57,18 @@ const QuestionStyles = styled.div`
             margin: 1rem 0;
             display: flex;
             justify-content: space-between;
+            cursor: pointer;
+            text-align: center;
+            .title{
+                * {
+                    pointer-events: none;
+                }
+                margin-top:1rem;
+
+                &:hover{
+                    color: var(--text-s);
+                }
+            }
             .tag{
                 background-color: var(--primary);
                 border-radius: 2px;
@@ -128,9 +141,14 @@ export default function Question() {
 
                     </div>
                     <div className="heading">
-                        <div className="title">
-                            CSS display: inline vs inline-block
-                        </div>
+                        <Link
+                            to="/question"
+                        >
+                            <div className="title">
+
+                                CSS display: inline vs inline-block
+                            </div>
+                        </Link>
                         <div className="tag">
                             CSS
                         </div>
@@ -149,7 +167,7 @@ export default function Question() {
                     View Comments
                 </div>
 
-                <div className= {comments ? "show" : "comment-list"} >
+                <div className={comments ? "show" : "comment-list"} >
                     <Comments />
                 </div>
 

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import Questions from '../components/Questions';
+import Comments from '../components/Comments';
 
 
 const ProfileStyles = styled.div`
@@ -96,8 +97,8 @@ export default function Profile() {
           <div className="left">
             <Header text="Ojasvi Shaklya" />
             <div className="button-tray">
-              <Button btnText="Follow"/>
-              <Button btnText="Spam"/>
+              <Button btnText="Follow" color="#1E90FF"/>
+              <Button btnText="Spam" color="red"/>
             </div>
             <div className="user-info">
               ojasvi shaklya@gmail.com
@@ -175,7 +176,9 @@ export default function Profile() {
           </div>
           <div className="right">
             <Header text={info.current} />
-            <Questions/>
+           { info.ques && <Questions/>}
+           { info.comments && <Comments/>}
+
           </div>
         </div>
       </div>

@@ -78,7 +78,7 @@ const GlobalStyles = createGlobalStyle`
    label {
      font-size: 1.8rem;
    }
-   input {
+   input,textarea {
      width: 100%;
      font-size: 2rem;
      padding: 1.2rem;
@@ -98,24 +98,9 @@ const GlobalStyles = createGlobalStyle`
    }
 
 
+ 
 
-   button[type='submit'] {
-     margin-top:2rem;
-     width: 100%;
-     background-color: var(--background);
-     color: var(--text);
-     font-size: 2rem;
-     display: inline-block;
-     outline: none;
-     border: 2px solid var(--primary);
-     padding: 1rem 4rem;
-     border-radius: 8px;
-     cursor: pointer;
 
-     &:hover{
-        background-color: var(--primary);
-     }
-   }
    .toast{
      font-size:2rem;
      margin-top:5rem

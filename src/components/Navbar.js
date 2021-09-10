@@ -79,7 +79,8 @@ const NavStyles = styled.div`
 
     padding: 0;
     background: var(--primary);
-    clip-path: polygon(0 0, 100% 0%, 100% 45%, 0 100%, 0% 50%);  
+    clip-path: unset;  
+    position: relative;
     .hide-item {
       display:none;
     }
@@ -90,6 +91,7 @@ const NavStyles = styled.div`
       --top: 1rem;
       text-align:start;
       position: absolute;
+      z-index:10001;
       transition: 0.3s ease transform;
       background-color: var(--background);
       padding: 1rem ;
@@ -175,13 +177,24 @@ export default function Navbar({ toggleTheme, theme }) {
           </li>
           <li>
             <NavLink
-              to="/contact"
+              to="/notifications"
               onClick={() => setShowNav(!showNav)}
               role="button"
               onKeyDown={() => setShowNav(!showNav)}
               tabIndex={0}
             >
               <BsBell fill={theme === 'd' ? "#fff" : "#333"} className="theme-icon" />
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/login"
+              onClick={() => setShowNav(!showNav)}
+              role="button"
+              onKeyDown={() => setShowNav(!showNav)}
+              tabIndex={0}
+            >
+              Sign In
             </NavLink>
           </li>
           <li>

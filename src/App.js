@@ -9,6 +9,8 @@ import Typography from './styles/Typography';
 import { ThemeProvider } from 'styled-components';
 import { light, dark } from './styles/Themes'
 import Login from './pages/Login';
+import QuestionDetails from './pages/QuestionDetails';
+import Notifications from './pages/Notifications';
 
 export default function App() {
 
@@ -37,6 +39,12 @@ export default function App() {
           </Route>
           <Route path="/login">
             <Login />
+          </Route>
+          <Route path="/question">
+            <QuestionDetails />
+          </Route>
+          <Route path="/notifications">
+            <Notifications />
           </Route>
           <Route path="/">
             <Explore />

@@ -11,7 +11,10 @@ const ButtonStyle = styled.div`
     display: inline-block;
     color: var(--text);
     &:hover{
-        background-color: var(--primary);
+        background-color: ${(props) =>
+      props.hoverColor };
+          border: ${(props) =>
+         "2px solid" +props.hoverColor};
     }
     cursor: pointer;
     * {
@@ -29,7 +32,7 @@ export default function Button({
   color='var(--primary)'
 }) {
   return (
-    <ButtonStyle outline={outline} className="button-wrapper" style={{backgroundColor: outline ? '':color}}>
+    <ButtonStyle outline={outline} hoverColor={color} className="button-wrapper" style={{backgroundColor: outline ? '':color}}>
         {btnText}
     </ButtonStyle>
   );

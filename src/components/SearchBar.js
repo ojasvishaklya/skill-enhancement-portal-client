@@ -8,14 +8,35 @@ import 'react-toastify/dist/ReactToastify.css';
 const FormStyle = styled.form`
    width: 100%;
 
+   .search-tray{
+       margin:0 auto;
+       font-size: 1.8rem;
+        display: flex;
+        justify-content: space-evenly;
+        width: 50%;
+        margin-bottom: 2rem; 
+        background-color :var(--background-s) ;
+        border-radius: 10px 10px 10px 10px;
+        .search-type{
+            padding: 1rem 2rem;
+            text-align: center;
+            width: 100%;
+            border: 2px solid var(--background-s);
+            cursor: pointer;
+            &:hover{
+                border: 2px solid ;
+            }
+        }     
+   }
+
    .form-group {
         display: flex;
         justify-content: center;
         width: 100%;
-        margin-bottom: 2rem;
    }
 
    input{
+     margin:0;
      width: 50%;
      text-align: center;
      font-size: 2rem;
@@ -37,13 +58,14 @@ const FormStyle = styled.form`
 
    }
 
+   
    button[type='submit'] {
      background-color: var(--primary);
      color: var(--text);
      font-size: 2rem;
      display: inline-block;
      outline: none;
-     border: none;
+     border: 2px solid var(--primary);
      padding: 1.2rem 4rem;
      border-radius: 0 10px 10px 0;
      cursor: pointer;
@@ -79,6 +101,14 @@ const FormStyle = styled.form`
 
 export default function SearchBar() {
     const [query, setQuery] = useState('');
+    const [searchTray, setSearchTray] = useState(false);
+    const [search, setSearch] = useState({
+        "user": true,
+        "question": false,
+        "tag": false,
+        "current":"user"
+    });
+
 
 
     const handleSubmit = (e) => {
@@ -127,25 +157,83 @@ export default function SearchBar() {
 
     return (
 
-        <FormStyle onSubmit={(e) => handleSubmit(e)}>
+        <FormStyle onSubmit={(e) => handleSubmit(e)}
+        onMouseEnter={() => {
+            setSearchTray(true);
+        }}
+        onMouseLeave={() => {
+            setSearchTray(false);
+        }}
+        >
             <ToastContainer className="toast" />
-            <div className="form-group">
+            <div className="form-group"
+            
+            >
                 <input
                     type="text"
                     id="query"
                     name="query"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search a question"
+                    placeholder={"Search a " +search.current}
                     required
-                />
-                            <button
-                type="submit"
-            >
-                Send
-            </button>
-            </div>
 
+                />
+                <button
+                    id="search"
+                    type="submit"
+                >
+                    Send
+                </button>
+            </div>
+            {
+                searchTray &&
+                <div className="search-tray">
+                    <div className="search-type"
+
+                        onClick={() => {
+                            setSearch({
+                                "question": false,
+                                "tag": false,
+                                "user": true,
+                                "current":"user"
+                            })
+                        }}
+                        style={{ border: search.user ? "2px solid" : "" }}
+                    >
+                        User
+                    </div>
+
+                    <div className="search-type"
+                        onClick={() => {
+                            setSearch({
+                                "question": true,
+                                "tag": false,
+                                "user": false,
+                                "current":"question"
+                            })
+                        }}
+                        style={{ border: search.question ? "2px solid" : "" }}
+                    >
+                        Question
+                    </div>
+
+
+                    <div className="search-type"
+                        onClick={() => {
+                            setSearch({
+                                "question": false,
+                                "tag": true,
+                                "user": false,
+                                "current":"tag"
+                            })
+                        }}
+                        style={{ border: search.tag ? "2px solid" : "" }}
+                    >
+                        Tag
+                    </div>
+                </div>
+            }
 
 
         </FormStyle>
