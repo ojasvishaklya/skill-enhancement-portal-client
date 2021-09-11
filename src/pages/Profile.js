@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router';
 import styled from 'styled-components';
 import Header from '../components/Header';
 import Button from '../components/Button';
 import Questions from '../components/Questions';
 import Comments from '../components/Comments';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../features/userSlice';
+import axio from '../app/AxiosConfig';
+import MyLoader from '../components/MyLoader';
 
 
 const ProfileStyles = styled.div`
@@ -83,6 +88,30 @@ const ProfileStyles = styled.div`
 
 export default function Profile() {
 
+  const { id } = useParams();
+  const user = useSelector(selectUser);
+  const isMe = user != null &&  id === user.id;
+  console.log(id + " = " + isMe );
+  const [loading, setLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState({});
+
+
+
+  useEffect(() => {
+    async function fetchData() {
+
+      const res = await axio.get(`/users/profile/${id}/`);
+      setUserProfile(res.data);
+      console.log(userProfile);
+      setLoading(false);
+    }
+
+    fetchData();
+
+    return () => {
+    }
+  }, [id])
+
   const [info, setInfo] = useState({
     "ques": true,
     "comments": false,
@@ -90,27 +119,31 @@ export default function Profile() {
     "following": false,
     "current": "Question"
   });
-  return (
+  return loading ?
+    <MyLoader text="Loading user profile" />
+    :
     <ProfileStyles>
       <div className="container">
         <div className="profile">
           <div className="left">
-            <Header text="Ojasvi Shaklya" />
-            <div className="button-tray">
-              <Button btnText="Follow" color="#1E90FF"/>
-              <Button btnText="Spam" color="red"/>
+            <Header text={userProfile.name} />
+            {
+              !isMe && <div className="button-tray">
+                <Button btnText="Follow" color="#1E90FF" />
+                <Button btnText="Spam" color="red" />
+              </div>
+            }
+            <div className="user-info">
+              {userProfile.email}
             </div>
             <div className="user-info">
-              ojasvi shaklya@gmail.com
+              {userProfile.linkedin}
             </div>
             <div className="user-info">
-              Linkedin
+              {userProfile.github}
             </div>
             <div className="user-info">
-              Github
-            </div>
-            <div className="user-info">
-              Points: <span>100</span>
+              Points: <span>{userProfile.points}</span>
             </div>
             <div className="user-click" onClick={
               () => {
@@ -125,7 +158,7 @@ export default function Profile() {
             } style={{
               border: info.ques ? '2px solid var(--primary)' : ''
             }}>
-              Questions: 8
+              Questions: {userProfile.questionList.length}
             </div>
             <div className="user-click" onClick={
               () => {
@@ -141,7 +174,7 @@ export default function Profile() {
               border: info.comments ? '2px solid var(--primary)' : ''
             }}
             >
-              Comments: 12
+              Comments: {userProfile.commentList.length}
             </div>
             <div className="user-click" onClick={
               () => {
@@ -156,7 +189,7 @@ export default function Profile() {
             } style={{
               border: info.followers ? '2px solid var(--primary)' : ''
             }}>
-              Followers: 101
+              Followers: {userProfile.followersList.length}
             </div>
             <div className="user-click" onClick={
               () => {
@@ -171,17 +204,17 @@ export default function Profile() {
             } style={{
               border: info.following ? '2px solid var(--primary)' : ''
             }}>
-              Following: 51
+              Following: {userProfile.followersList.length}
             </div>
           </div>
           <div className="right">
             <Header text={info.current} />
-           { info.ques && <Questions/>}
-           { info.comments && <Comments/>}
-
+            {info.ques && <Questions />}
+            {info.comments && <Comments />}
           </div>
         </div>
       </div>
     </ProfileStyles>
-  );
+
+    ;
 }

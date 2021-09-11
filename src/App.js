@@ -11,6 +11,7 @@ import { light, dark } from './styles/Themes'
 import Login from './pages/Login';
 import QuestionDetails from './pages/QuestionDetails';
 import Notifications from './pages/Notifications';
+import Register from './pages/Register';
 
 export default function App() {
 
@@ -31,7 +32,7 @@ export default function App() {
       <Router>
         <Navbar theme={theme} toggleTheme={toggleTheme} />
         <Switch>
-          <Route path="/profile">
+          <Route path="/profile/:id">
             <Profile />
           </Route>
           <Route path="/projects">
@@ -39,6 +40,9 @@ export default function App() {
           </Route>
           <Route path="/login">
             <Login />
+          </Route>
+          <Route path="/register">
+            <Register />
           </Route>
           <Route path="/question">
             <QuestionDetails />

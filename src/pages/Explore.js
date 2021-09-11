@@ -5,6 +5,7 @@ import Header from '../components/Header';
 
 
 export default function Explore() {
+  
   return (
     <div className="container">
       <SearchBar/>

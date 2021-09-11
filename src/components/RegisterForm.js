@@ -6,14 +6,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import Loader from "react-loader-spinner";
 import axio from '../app/AxiosConfig';
 import { useHistory } from "react-router-dom";
-import { useDispatch } from 'react-redux';
-import {login} from '../features/userSlice'
 
 
 
 
 
-const LoginStyle = styled.form`
+const RegisterFormStyle = styled.form`
    width: 50%;
    margin :0 auto;
 
@@ -38,17 +36,17 @@ const LoginStyle = styled.form`
 
 
 
-export default function LoginForm() {
+export default function RegisterForm() {
     const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
+    const [github, setGithub] = useState('');
+    const [linkedin, setLinkedin] = useState('');
     const [loading, setLoading] = useState(false)
     const history = useHistory();
-    const dispatch = useDispatch();
-
 
     const handleSubmit = (e) => {
-
-
+        console.log("here")
         e.preventDefault();
         setLoading(true);
         toast.dark(`Trying to sign in`, {
@@ -61,15 +59,16 @@ export default function LoginForm() {
             progress: undefined,
         });
         const userReq = {
-
             "email": email,
-            "password": password
-
+            "password": password,
+            "linkedin":linkedin,
+            "github":github,
+            "username":username
         }
-         axio.post("/auth/signin", userReq)
+        axio.post("/auth/signup", userReq)
             .then(function (response) {
                 console.log(response);
-                toast.dark(`Successfully signed in for `+response.data.username, {
+                toast.dark(response.data, {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -79,12 +78,9 @@ export default function LoginForm() {
                     progress: undefined,
                 });
                 setLoading(false);
-                dispatch(login(response.data));
-                localStorage.setItem("user",JSON.stringify(response.data));
-                history.push(`/profile/${response.data.id}`);
-
+                history.push("/login");
             }, function (error) {
-                toast.error("Invalid username or password", {
+                toast.error(error.text, {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -93,7 +89,6 @@ export default function LoginForm() {
                     draggable: true,
                     progress: undefined,
                 });
-                setLoading(false);
             });
 
 
@@ -101,24 +96,37 @@ export default function LoginForm() {
 
     return (
 
-        <LoginStyle onSubmit={(e) => handleSubmit(e)}>
+        <RegisterFormStyle onSubmit={(e) => handleSubmit(e)}>
             <ToastContainer className="toast" />
             <div className="form-group">
-                <div className="form-group">
-                    <label htmlFor="email">
-                        Your Email
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </label>
-                </div>
+                <label htmlFor="username">
+                    Your Username
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                </label>
+            </div>
+            <div className="form-group">
+                <label htmlFor="email">
+                    Your Email
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                </label>
+            </div>
+            <div className="form-group">
                 <label htmlFor="password">
-                    Your Password
+                    Set New Password
                     <input
                         type="password"
                         id="password"
@@ -126,6 +134,33 @@ export default function LoginForm() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                    />
+                </label>
+            </div>
+            <div className="form-group">
+                <label htmlFor="github">
+                    Github url
+                    <input
+                        type="link"
+                        id="github"
+                        name="github"
+                        value={github}
+                        onChange={(e) => setGithub(e.target.value)}
+                        placeholder="optional"
+                    />
+                </label>
+            </div>
+            
+            <div className="form-group">
+                <label htmlFor="linkedin">
+                    Linkedin url
+                    <input
+                        type="link"
+                        id="linkedin"
+                        name="linkedin"
+                        value={linkedin}
+                        onChange={(e) => setLinkedin(e.target.value)}
+                        placeholder="optional"
                     />
                 </label>
             </div>
@@ -140,12 +175,12 @@ export default function LoginForm() {
                     <button
                         type="submit"
                     >
-                        Sign In
+                        Sign Up
                     </button>
             }
 
 
 
-        </LoginStyle>
+        </RegisterFormStyle>
     );
 };

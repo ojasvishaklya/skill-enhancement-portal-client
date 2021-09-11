@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { MdClose, MdMenu } from 'react-icons/md';
 import { FiSun, FiMoon } from 'react-icons/fi';
 import { BsBell } from 'react-icons/bs';
 import Logo from '../assets/images/logo.png';
+import { selectUser } from '../features/userSlice';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { logout } from '../features/userSlice';
 
 const NavStyles = styled.div`
 
@@ -119,7 +124,19 @@ const NavStyles = styled.div`
 `;
 
 export default function Navbar({ toggleTheme, theme }) {
+
+  const [user, setUser] = useState(useSelector(selectUser))
   const [showNav, setShowNav] = useState(false);
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  const reduxUser=useSelector(selectUser);
+
+  useEffect(() => {
+    return () => {
+    }
+  },)
+
   return (
     <NavStyles>
       <div
@@ -134,7 +151,7 @@ export default function Navbar({ toggleTheme, theme }) {
 
       <div className="navbar">
         <div className="company">
-          <img src={Logo} alt="Skill Enhancement Portal"/>
+          <img src={Logo} alt="Skill Enhancement Portal" />
         </div>
         <ul className={!showNav ? 'navItems hide-item' : 'navItems'}>
           <div
@@ -164,17 +181,30 @@ export default function Navbar({ toggleTheme, theme }) {
           </li>
 
 
-          <li>
-            <NavLink
-              to="/profile"
-              onClick={() => setShowNav(!showNav)}
-              role="button"
-              onKeyDown={() => setShowNav(!showNav)}
-              tabIndex={0}
-            >
-              Profile
-            </NavLink>
-          </li>
+          {
+            user ? <li>
+              <NavLink
+                to={"/profile/"  + user.id} 
+                onClick={() => setShowNav(!showNav)}
+                role="button"
+                onKeyDown={() => setShowNav(!showNav)}
+                tabIndex={0}
+              >
+                {user.username}
+              </NavLink>
+            </li>
+              : <li>
+                <NavLink
+                  to="/register"
+                  onClick={() => setShowNav(!showNav)}
+                  role="button"
+                  onKeyDown={() => setShowNav(!showNav)}
+                  tabIndex={0}
+                >
+                  Sign Up
+                </NavLink>
+              </li>
+          }
           <li>
             <NavLink
               to="/notifications"
@@ -186,17 +216,37 @@ export default function Navbar({ toggleTheme, theme }) {
               <BsBell fill={theme === 'd' ? "#fff" : "#333"} className="theme-icon" />
             </NavLink>
           </li>
-          <li>
-            <NavLink
-              to="/login"
-              onClick={() => setShowNav(!showNav)}
-              role="button"
-              onKeyDown={() => setShowNav(!showNav)}
-              tabIndex={0}
-            >
-              Sign In
-            </NavLink>
-          </li>
+          {
+            user ? <li>
+              <NavLink
+                to
+                onClick={() => {
+                  setShowNav(!showNav);
+                  localStorage.clear();
+                  dispatch(logout());
+                  history.push("/");
+                  setUser(null);
+                }}
+                role="button"
+                onKeyDown={() => setShowNav(!showNav)}
+                tabIndex={0}
+
+              >
+                Sign Out
+                </NavLink>
+            </li>
+              : <li>
+                <NavLink
+                  to="/login"
+                  onClick={() => setShowNav(!showNav)}
+                  role="button"
+                  onKeyDown={() => setShowNav(!showNav)}
+                  tabIndex={0}
+                >
+                  Sign In
+                </NavLink>
+              </li>
+          }
           <li>
             <Link onClick={() => {
               toggleTheme(theme);
