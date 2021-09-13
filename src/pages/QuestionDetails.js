@@ -1,8 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 import Comments from '../components/Comments';
 import MakeComment from '../components/MakeComment';
+import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
+
+import { useSelector } from 'react-redux';
+import { selectUser } from '../features/userSlice';
+import axio from '../app/AxiosConfig';
+import MyLoader from '../components/MyLoader';
+import Modal from 'react-awesome-modal';
+import { useParams } from 'react-router';
+import Question from '../components/Question';
+import Button from '../components/Button';
 
 
 
@@ -12,22 +23,24 @@ const QuestionDetailsStyles = styled.div`
     height: max-content;
     padding: 1.2rem 2rem;
     margin: 1rem 0;
+    max-width: 100%;
+
     .question-section{
         display: flex;
         align-items: center;
+        justify-content: flex-start;
     .vote-section{
+        flex: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 100px;
+        max-width: 50px;
         margin: 1.2rem 2rem;
         font-size: 2.5rem;
         .icon {
-        display: block;
         width: 3rem;
         height: 3rem;
-        margin: 0 0 0 auto;
         cursor: pointer;
         text-align: center;
         * {
@@ -41,6 +54,9 @@ const QuestionDetailsStyles = styled.div`
 
 
     .ques{
+        flex: 2;
+        width: 100%;
+        overflow: hidden;
         .info{
             font-size: 1.5rem;
             display: flex;
@@ -57,6 +73,18 @@ const QuestionDetailsStyles = styled.div`
             margin: 1rem 0;
             display: flex;
             justify-content: space-between;
+            cursor: pointer;
+            text-align: center;
+            .title{
+                * {
+                    pointer-events: none;
+                }
+                margin-top:1rem;
+
+                &:hover{
+                    color: var(--text-s);
+                }
+            }
             .tag{
                 background-color: var(--primary);
                 border-radius: 2px;
@@ -73,115 +101,209 @@ const QuestionDetailsStyles = styled.div`
     }
 
     }
-    .comment-section{
-        
-        .load-comments{
-            margin-top: 1rem;
-            width: 100%;
-            font-size: 1.5rem;
-            text-align: center;
-        }
-        .comment-list{
-            transition: opacity 1s ease-out;
-            opacity: 0;
-            height: 0;
-            overflow: hidden;
-            .show {
-                opacity: 1;
-                height: auto;
-            }
-        }
-    }
-    .make-comment{
 
-        
-        .load-comments{
-            width: 100%;
-            font-size: 1.5rem;
+    .comment-section{
+        .heading{
+            font-size: 2rem;
+            margin: 1rem 0;
+        }
+        .clickable{
             cursor: pointer;
             text-align: center;
-            * {
-                pointer-events: none;
-            }
-            margin:1rem 0;
-
             &:hover{
                 color: var(--text-s);
             }
-        }
-        .comment-form{
-            width: 100%;
-            /* background-color: var(--background);
-            padding: 2rem 0; */
-}
         }
     }
     
 `;
 export default function QuestionDetails() {
-    const [comments, setComments] = useState(true);
+    const { id } = useParams();
+    const user = useSelector(selectUser);
+    const [isMe, setisMe] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [question, setQuestion] = useState({});
+    const [modal, setModal] = useState(false)
     const [makeComment, setMakeComment] = useState(false);
 
-    return (
+    // "id": 2,
+    // "postName": "flutter error",
+    // "url": null,
+    // "description": ""
+    // "tag": "flutter",
+    // "tagId": "5",
+    // "comments": [],
+    // "upvotes": 3,
+    // "downvotes": 0,
+    // "creator": "ojasvi",
+    // "creatorId": "1",
+    // "instant": "2021-08-25T18:36:12.921575Z"
+
+    const [vote, setVote] = useState(0);
+    const history = useHistory();
+    const upVote = async () => {
+
+        if (!user) {
+            history.push("/login");
+            return;
+        }
+
+        setVote(vote + 1);
+        axio.post(`/ques/${question.id}/upvote`)
+            .then(response => {
+                response.text();
+            })
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+    }
+
+    const downVote = async () => {
+
+        if (!user) {
+            history.push("/login");
+            return;
+        }
+
+        setVote(vote - 1);
+        axio.post(`/ques/${question.id}/upvote`)
+            .then(response => {
+                response.text()
+            })
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+    }
+    const deleteQuestion = async () => {
+
+        if (!user) {
+            history.push("/login");
+            return;
+        }
+
+        const res = await axio.delete(`/ques/${question.id}`)
+        console.log(res);
+        history.push("/");
+
+    }
+
+
+    useEffect(() => {
+        async function fetchData() {
+
+            const res = await axio.get(`/ques/${id}/`);
+            setQuestion(res.data);
+            setVote(parseInt(res.data.upvotes));
+            setisMe(res.data.creatorId === user.id);
+            console.log(res.data);
+            setLoading(false);
+        }
+
+        fetchData();
+
+        return () => {
+        }
+    }, [])
+
+    return loading ?
+        <MyLoader text="Loading Question" />
+        :
+
         <div className="container">
+            {
+                isMe &&
+                <div className="delete-button" onClick={() => deleteQuestion()}>
+                    <Button btnText="Close Question" />
+                </div>
+
+            }
             <QuestionDetailsStyles>
+
+
                 <div className="question-section">
 
                     <div className="vote-section">
-                        <div className="icon">
+                        <div className="icon" onClick={() => upVote()}>
                             <IoIosArrowUp />
                         </div>
-                        0
-                        <div className="icon">
+                        {vote}
+                        <div className="icon" onClick={() => downVote()}>
                             <IoIosArrowDown />
                         </div>
                     </div>
                     <div className="ques">
                         <div className="info">
                             <div className="author">
-                                Ojasvi Shaklya
+                                <Link to={"/profile/" + question.creatorId}>
+                                    {question.creator}
+                                </Link>
                             </div>
+
                             <div className="instant">
-                                22-03-2021
+                                {
+                                    new Date(question.instant).toGMTString()
+                                }
                             </div>
 
                         </div>
                         <div className="heading">
-                            <div className="title">
-                                CSS display: inline vs inline-block
-                            </div>
+                            <Link
+                                to={"/question/" + question.id}
+                            >
+                                <div className="title">
+
+                                    {
+                                        question.postName
+                                    }
+                                </div>
+                            </Link>
                             <div className="tag">
-                                CSS
+                                {question.tag}
                             </div>
                         </div>
                         <div className="desc">
-                            In CSS, display can have values of inline and inline-block. Can anyone explain in detail the difference between inline and inline-block?I searched everywhere, the most detailed explanation tells me inline-block is placed as inline, but behaves like block. But it does not explain what exactly "behave as a block" means. Is it any special feature?
+                            {question.description}
                         </div>
+                        {
+                            question.url && <div className="desc">
+                                Refrence url : {question.url}
+                            </div>
+                        }
                     </div >
                 </div>
 
                 <div className="comment-section">
                     <hr />
-                    <div className="load-comments" >
-                        Comments
+                    <div className="heading" >
+                        Comments:
                     </div>
+                    {
+                        question.comments && !question.comments.length &&
 
-                    <div className={comments ? "show" : "comment-list"} >
-                        <Comments />
+                        <div className="heading clickable" onClick={() => {
+                            setMakeComment(!makeComment);
+                        }}>
+                            No comments yet lets add some comments
+                            <br />
+                            <br />
+                        </div>
+                    }
+                    <div className="container" >
+                        {
+                            <Comments list={question.comments} selectable={isMe}/>
+                        }
                     </div>
-                </div>
-                <div className="make-comment">
                     <hr />
-                    <div  className="comment-form" style={{display: makeComment ?"block" :"none"}} >
-                        <MakeComment />
+                    <div className="comment-form" style={{ display: makeComment ? "block" : "none" }} >
+                        <MakeComment q_id={question.id} />
                     </div>
-                    <div className="load-comments" onClick={() => {
+                    <div className="heading clickable" onClick={() => {
                         setMakeComment(!makeComment);
                     }}>
                         Add Comment
                     </div>
                 </div>
+
+
             </QuestionDetailsStyles >
         </div>
-    )
+
 }

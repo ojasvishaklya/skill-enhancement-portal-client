@@ -4,16 +4,23 @@ import Question from './Question'
 
 
 const QuestionsStyles = styled.div`
-
-
+    max-height: 700px;
+    overflow: scroll;
+    ::-webkit-scrollbar {
+        display: none;
+    }
 `;
 
-export default function Questions() {
+export default function Questions({
+    list=[]
+}) {
     return (
-        <QuestionsStyles>
-                <Question />
-                <Question />
-                <Question />
+        <QuestionsStyles >
+                {
+                    list.map((ele)=>{
+                       return <Question question={ele}/>
+                    })
+                }
         </QuestionsStyles>
     )
 }

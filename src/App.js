@@ -29,7 +29,7 @@ export default function App() {
     <ThemeProvider theme={theme === 'l' ? light : dark}>
       <GlobalStyles />
       <Typography />
-      <Router>
+      <Router forceRefresh={true}>
         <Navbar theme={theme} toggleTheme={toggleTheme} />
         <Switch>
           <Route path="/profile/:id">
@@ -44,13 +44,13 @@ export default function App() {
           <Route path="/register">
             <Register />
           </Route>
-          <Route path="/question">
+          <Route path="/question/:id">
             <QuestionDetails />
           </Route>
           <Route path="/notifications">
             <Notifications />
           </Route>
-          <Route path="/">
+          <Route path="/**">
             <Explore />
           </Route>
         </Switch>

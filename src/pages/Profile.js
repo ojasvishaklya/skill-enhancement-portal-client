@@ -9,6 +9,10 @@ import { useSelector } from 'react-redux';
 import { selectUser } from '../features/userSlice';
 import axio from '../app/AxiosConfig';
 import MyLoader from '../components/MyLoader';
+import Modal from 'react-awesome-modal';
+import EditUserForm from '../components/EditUserForm';
+import Users from '../components/Users';
+
 
 
 const ProfileStyles = styled.div`
@@ -19,6 +23,8 @@ const ProfileStyles = styled.div`
 
     display: flex;
     gap: 5rem;
+
+
     .left{
       padding: 1rem 2rem;
       width: 30%;
@@ -90,19 +96,18 @@ export default function Profile() {
 
   const { id } = useParams();
   const user = useSelector(selectUser);
-  const isMe = user != null &&  id === user.id;
-  console.log(id + " = " + isMe );
+  const isMe = user != null && id === user.id;
   const [loading, setLoading] = useState(true);
   const [userProfile, setUserProfile] = useState({});
+  const [modal, setModal] = useState(false)
 
 
 
   useEffect(() => {
     async function fetchData() {
-
       const res = await axio.get(`/users/profile/${id}/`);
       setUserProfile(res.data);
-      console.log(userProfile);
+      console.log(res.data);
       setLoading(false);
     }
 
@@ -123,14 +128,23 @@ export default function Profile() {
     <MyLoader text="Loading user profile" />
     :
     <ProfileStyles>
+      <Modal visible={modal} className="modal" onClickAway={() => setModal(false)}>
+        <EditUserForm userProfile ={userProfile} setUserProfile={setUserProfile}/>
+      </Modal>
       <div className="container">
         <div className="profile">
           <div className="left">
             <Header text={userProfile.name} />
             {
-              !isMe && <div className="button-tray">
-                <Button btnText="Follow" color="#1E90FF" />
-                <Button btnText="Spam" color="red" />
+
+              <div className="button-tray">
+                {isMe && <div onClick={() => {
+                  setModal(true);
+                  console.log("clicked me");
+                }} ><Button btnText={'Edit Profile \u270e'} color="#1E90FF" />
+                </div>}
+                {!isMe && <Button btnText="Follow" color="#1E90FF" />}
+                {!isMe && <Button btnText="Spam" color="red" />}
               </div>
             }
             <div className="user-info">
@@ -204,13 +218,15 @@ export default function Profile() {
             } style={{
               border: info.following ? '2px solid var(--primary)' : ''
             }}>
-              Following: {userProfile.followersList.length}
+              Following: {userProfile.followingList.length}
             </div>
           </div>
           <div className="right">
             <Header text={info.current} />
-            {info.ques && <Questions />}
-            {info.comments && <Comments />}
+            {info.ques && <Questions list={userProfile.questionList} />}
+            {info.comments && <Comments list={userProfile.commentList}/>}
+            {info.followers && <Users list={userProfile.followersList} />}
+            {info.following && <Users list={userProfile.followingList} />}
           </div>
         </div>
       </div>

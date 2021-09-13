@@ -3,6 +3,10 @@ import styled from 'styled-components'
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io'
 import Comments from './Comments';
 import { Link } from 'react-router-dom';
+import axio from '../app/AxiosConfig';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../features/userSlice';
+import { useHistory } from 'react-router';
 
 
 
@@ -12,22 +16,23 @@ const QuestionStyles = styled.div`
     height: max-content;
     padding: 1.2rem 2rem;
     margin: 1rem 0;
+    max-width: 100%;
     .question-section{
         display: flex;
         align-items: center;
+        justify-content: flex-start;
     .vote-section{
+        flex: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 100px;
+        max-width: 50px;
         margin: 1.2rem 2rem;
         font-size: 2.5rem;
         .icon {
-        display: block;
         width: 3rem;
         height: 3rem;
-        margin: 0 0 0 auto;
         cursor: pointer;
         text-align: center;
         * {
@@ -41,6 +46,9 @@ const QuestionStyles = styled.div`
 
 
     .ques{
+        flex: 2;
+        width: 100%;
+        overflow: hidden;
         .info{
             font-size: 1.5rem;
             display: flex;
@@ -85,93 +93,117 @@ const QuestionStyles = styled.div`
     }
 
     }
-    .comment-section{
-        
-        .load-comments{
+    @media only screen and (max-width: 768px){
+        .question-section{
+            flex-direction: column-reverse;
             width: 100%;
-            font-size: 1.5rem;
-            cursor: pointer;
-            text-align: center;
-            * {
-                pointer-events: none;
-            }
-            margin-top:1rem;
-
-            &:hover{
-                color: var(--text-s);
-            }
-        }
-        .comment-list{
-            transition: opacity 1s ease-out;
-            opacity: 0;
-            height: 0;
-            overflow: hidden;
-            .show {
-                opacity: 1;
-                height: auto;
+            .vote-section{
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-evenly;
             }
         }
     }
-    
 `;
-export default function Question() {
-    const [comments, setComments] = useState(false);
+export default function Question({
+    question
+    // private Long id;
+    // private String postName;
+    // private String url;
+    // private String description;
+    // private String tag;
+    // private int upvotes;
+    // private int downvotes;
+    // private String creator;
+    // private String creatorId;
+}
+
+) {
+    const user = useSelector(selectUser);
+    const [vote, setVote] = useState(parseInt(question.upvotes));
+    const history = useHistory();
+    const upVote = async () => {
+
+        if (!user) {
+            history.push("/login");
+            return;
+        }
+
+        setVote(vote + 1);
+        axio.post(`/ques/${question.id}/upvote`)
+            .then(response => {
+                response.text();
+            })
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+    }
+    const downVote = async () => {
+
+        if (!user) {
+            history.push("/login");
+            return;
+        }
+
+        setVote(vote - 1);
+        axio.post(`/ques/${question.id}/upvote`)
+            .then(response => {
+                response.text()
+            })
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+    }
 
     return (
         <QuestionStyles>
             <div className="question-section">
 
                 <div className="vote-section">
-                    <div className="icon">
+                    <div className="icon" onClick={() => upVote()}>
                         <IoIosArrowUp />
                     </div>
-                    0
-                    <div className="icon">
+                    {vote}
+                    <div className="icon" onClick={() => downVote()}>
                         <IoIosArrowDown />
                     </div>
                 </div>
                 <div className="ques">
                     <div className="info">
                         <div className="author">
-                            Ojasvi Shaklya
+                            <Link to={"/profile/" + question.creatorId}>
+                                {question.creator}
+                            </Link>
                         </div>
                         <div className="instant">
-                            22-03-2021
+                            {
+                                new Date(question.instant).toGMTString()
+                            }
                         </div>
 
                     </div>
                     <div className="heading">
-                        <Link
-                            to="/question"
-                        >
-                            <div className="title">
 
-                                CSS display: inline vs inline-block
-                            </div>
-                        </Link>
+                        <div className="title" onClick={() => {
+                            if (!user) {
+                                history.push("/login");
+                                return;
+                            }
+                            history.push("/question/" + question.id);
+
+
+                        }}>
+
+                            {
+                                question.postName
+                            }
+                        </div>
                         <div className="tag">
-                            CSS
+                            {question.tag}
                         </div>
                     </div>
                     <div className="desc">
-                        In CSS, display can have values of inline and inline-block. Can anyone explain in detail the difference between inline and inline-block?I searched everywhere, the most detailed explanation tells me inline-block is placed as inline, but behaves like block. But it does not explain what exactly "behave as a block" means. Is it any special feature?
+                        {question.description}
                     </div>
                 </div >
-            </div>
-
-            <div className="comment-section">
-                <hr />
-                <div className="load-comments" onClick={() => {
-                    setComments(!comments);
-                }}>
-                    View Comments
-                </div>
-
-                <div className={comments ? "show" : "comment-list"} >
-                    <Comments />
-                </div>
-
-
             </div>
         </QuestionStyles >
     )

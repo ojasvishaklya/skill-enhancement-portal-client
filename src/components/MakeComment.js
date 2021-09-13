@@ -6,6 +6,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import Loader from "react-loader-spinner";
 import axios from 'axios';
 
+import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
+
+import { useSelector } from 'react-redux';
+import { selectUser } from '../features/userSlice';
+import axio from '../app/AxiosConfig';
+
 
 const MakeCommentStyles = styled.form`
 width: 100%;
@@ -54,7 +61,11 @@ textarea {
   }
 `;
 
-function MakeComment() {
+function MakeComment({
+    q_id
+}) {
+    const history=useHistory();
+    const user = useSelector(selectUser);
     const [url, setUrl] = useState('');
     const [text, setText] = useState('');
     const [loading, setLoading] = useState(false)
@@ -62,35 +73,26 @@ function MakeComment() {
     const handleSubmit = (e) => {
         console.log("here")
         e.preventDefault();
+        if (!user) {
+            history.push("/login");
+            return;
+        }
         setLoading(true);
-        toast.dark(`forwarding your message ${text}`, {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
+
 
         const commentRequest = {
-            "q_id": "1",
+            "q_id": q_id,
             "text": text,
             "url": url
-
         }
-        axios.post("http://localhost:8080/auth/signin", commentRequest)
+        axio.post("/comment", commentRequest)
             .then(function (response) {
                 console.log(response);
-                toast.dark(`message sent !!`, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
+                history.push("/question/"+q_id);
+                setText("");
+                setUrl("");
+                setLoading(false);
+
 
             }, function (error) {
                 toast.error(error.text, {
@@ -104,7 +106,6 @@ function MakeComment() {
                 });
             });
 
-        setLoading(false);
 
     };
 
@@ -151,10 +152,6 @@ function MakeComment() {
                         </button>
                 }
             </div>
-
-
-
-
         </MakeCommentStyles>
     );
 }

@@ -3,6 +3,9 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import MyLoader from './MyLoader';
+import axio from '../app/AxiosConfig';
+import axios from 'axios';
 
 
 const FormStyle = styled.form`
@@ -99,75 +102,64 @@ const FormStyle = styled.form`
 
 
 
-export default function SearchBar() {
+export default function SearchBar({
+    setUserList,
+    setQuestionList,
+    search,
+    setSearch
+}) {
     const [query, setQuery] = useState('');
     const [searchTray, setSearchTray] = useState(false);
-    const [search, setSearch] = useState({
-        "user": true,
-        "question": false,
-        "tag": false,
-        "current":"user"
-    });
+    const [loading, setLoading] = useState(false);
+
+
 
 
 
     const handleSubmit = (e) => {
         console.log("here")
         e.preventDefault();
-        var templateParams = {
-            query: query,
+        setLoading(true);
+ 
+        async function fetchData() {
+            const dto = {
+                "text": query
+            };
+            console.log(dto);
 
-        };
-        toast.dark(`forwarding your message ${query}`, {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
-        // emailjs.send('service_p2apwk4', 'template_xnw7r6p', templateParams)
-        //   .then(function (response) {
-        //     toast.dark(`message sent !!`, {
-        //       position: "top-right",
-        //       autoClose: 5000,
-        //       hideProgressBar: false,
-        //       closeOnClick: true,
-        //       pauseOnHover: true,
-        //       draggable: true,
-        //       progress: undefined,
-        //     });
-        //     setName("");
-        //     setMessage("");
-        //     setEmail("");
-        //   }, function (error) {
-        //     toast.error(error.text, {
-        //       position: "top-right",
-        //       autoClose: 5000,
-        //       hideProgressBar: false,
-        //       closeOnClick: true,
-        //       pauseOnHover: true,
-        //       draggable: true,
-        //       progress: undefined,
-        //     });
-        //   });
+            if (search.current === "user") {
+                const res = await axio.get(`/users/search/`+query);
+                console.log(res.data);
+                setUserList(res.data);
+                setLoading(false);
+            }
+            else if (search.current === "question") {
+                const res = await axio.post('/ques/search',dto);
+                console.log(res.data);
+                setQuestionList(res.data);
+                setLoading(false);
+            }
+
+        }
+
+        fetchData();
+        setLoading(false);
 
     };
 
-    return (
-
-        <FormStyle onSubmit={(e) => handleSubmit(e)}
-        onMouseEnter={() => {
-            setSearchTray(true);
-        }}
-        onMouseLeave={() => {
-            setSearchTray(false);
-        }}
+    return loading ?
+        <MyLoader />
+        : <FormStyle onSubmit={(e) => handleSubmit(e)}
+            onMouseEnter={() => {
+                setSearchTray(true);
+            }}
+            onMouseLeave={() => {
+                setSearchTray(false);
+            }}
         >
             <ToastContainer className="toast" />
             <div className="form-group"
-            
+
             >
                 <input
                     type="text"
@@ -175,7 +167,7 @@ export default function SearchBar() {
                     name="query"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder={"Search a " +search.current}
+                    placeholder={"Search a " + search.current}
                     required
 
                 />
@@ -196,7 +188,7 @@ export default function SearchBar() {
                                 "question": false,
                                 "tag": false,
                                 "user": true,
-                                "current":"user"
+                                "current": "user"
                             })
                         }}
                         style={{ border: search.user ? "2px solid" : "" }}
@@ -210,7 +202,7 @@ export default function SearchBar() {
                                 "question": true,
                                 "tag": false,
                                 "user": false,
-                                "current":"question"
+                                "current": "question"
                             })
                         }}
                         style={{ border: search.question ? "2px solid" : "" }}
@@ -223,19 +215,19 @@ export default function SearchBar() {
                         onClick={() => {
                             setSearch({
                                 "question": false,
-                                "tag": true,
+                                "trending": true,
                                 "user": false,
-                                "current":"tag"
+                                "current": "trending question"
                             })
                         }}
-                        style={{ border: search.tag ? "2px solid" : "" }}
+                        style={{ border: search.trending ? "2px solid" : "" }}
                     >
-                        Tag
+                        Trending
                     </div>
                 </div>
             }
 
 
         </FormStyle>
-    );
+        ;
 };

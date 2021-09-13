@@ -125,17 +125,14 @@ const NavStyles = styled.div`
 
 export default function Navbar({ toggleTheme, theme }) {
 
-  const [user, setUser] = useState(useSelector(selectUser))
+  const user = (useSelector(selectUser));
   const [showNav, setShowNav] = useState(false);
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const reduxUser=useSelector(selectUser);
+  const reduxUser = useSelector(selectUser);
 
-  useEffect(() => {
-    return () => {
-    }
-  },)
+
 
   return (
     <NavStyles>
@@ -184,7 +181,7 @@ export default function Navbar({ toggleTheme, theme }) {
           {
             user ? <li>
               <NavLink
-                to={"/profile/"  + user.id} 
+                to={"/profile/" + user.id}
                 onClick={() => setShowNav(!showNav)}
                 role="button"
                 onKeyDown={() => setShowNav(!showNav)}
@@ -205,7 +202,7 @@ export default function Navbar({ toggleTheme, theme }) {
                 </NavLink>
               </li>
           }
-          <li>
+          {user ? <li>
             <NavLink
               to="/notifications"
               onClick={() => setShowNav(!showNav)}
@@ -215,7 +212,8 @@ export default function Navbar({ toggleTheme, theme }) {
             >
               <BsBell fill={theme === 'd' ? "#fff" : "#333"} className="theme-icon" />
             </NavLink>
-          </li>
+          </li> :
+            <></>}
           {
             user ? <li>
               <NavLink
@@ -225,7 +223,7 @@ export default function Navbar({ toggleTheme, theme }) {
                   localStorage.clear();
                   dispatch(logout());
                   history.push("/");
-                  setUser(null);
+                  // setUser(null);
                 }}
                 role="button"
                 onKeyDown={() => setShowNav(!showNav)}
@@ -233,7 +231,7 @@ export default function Navbar({ toggleTheme, theme }) {
 
               >
                 Sign Out
-                </NavLink>
+              </NavLink>
             </li>
               : <li>
                 <NavLink
