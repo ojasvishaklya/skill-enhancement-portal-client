@@ -170,7 +170,7 @@ export default function Profile() {
     <MyLoader text="Loading user profile" />
     :
     <ProfileStyles>
-      <Modal visible={modal} className="modal" onClickAway={() => setModal(false)}>
+      <Modal visible={modal} width={"700px"} className="modal" onClickAway={() => setModal(false)}>
         <EditUserForm userProfile={userProfile} setUserProfile={setUserProfile} />
       </Modal>
       <div className="container">

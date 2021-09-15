@@ -20,6 +20,7 @@ export default function Users({
 }) {
     return (
         <UsersStyles >
+            
                 {
                     list.map((ele)=>{
                        return <UserMin 

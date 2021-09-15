@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MyLoader from './MyLoader';
 import axio from '../app/AxiosConfig';
-import axios from 'axios';
+import { compose } from 'redux';
 
 
 const FormStyle = styled.form`
@@ -106,21 +106,19 @@ export default function SearchBar({
     setUserList,
     setQuestionList,
     search,
-    setSearch
+    setSearch,
+    setStack
 }) {
     const [query, setQuery] = useState('');
     const [searchTray, setSearchTray] = useState(false);
     const [loading, setLoading] = useState(false);
 
 
-
-
-
     const handleSubmit = (e) => {
         console.log("here")
         e.preventDefault();
         setLoading(true);
- 
+
         async function fetchData() {
             const dto = {
                 "text": query
@@ -128,16 +126,26 @@ export default function SearchBar({
             console.log(dto);
 
             if (search.current === "user") {
-                const res = await axio.get(`/users/search/`+query);
+                const res = await axio.get(`/users/search/` + query);
                 console.log(res.data);
                 setUserList(res.data);
                 setLoading(false);
             }
             else if (search.current === "question") {
-                const res = await axio.post('/ques/search',dto);
+                const res = await axio.post('/ques/search', dto);
                 console.log(res.data);
                 setQuestionList(res.data);
                 setLoading(false);
+                
+                let stackSearch=query
+                stackSearch = stackSearch.trim();
+ 
+                // Replace All space (unicode is \\s) to %20
+                stackSearch = stackSearch.replaceAll(" ", "%20");
+                console.log("https://api.stackexchange.com/2.3/similar?pagesize=10&order=desc&sort=activity&title=" + stackSearch + "&site=stackoverflow");
+                const stack = await axio.get("https://api.stackexchange.com/2.3/similar?pagesize=10&order=desc&sort=activity&title=" + stackSearch + "&site=stackoverflow");
+                console.log(stack.data.items)
+                setStack(stack.data.items)
             }
 
         }

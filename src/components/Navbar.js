@@ -84,6 +84,8 @@ const NavStyles = styled.div`
   @media only screen and (max-width: 768px) {
 
     padding: 0;
+    height: 0;
+    margin-bottom: 5rem;
     background: var(--primary);
     clip-path: unset;  
     position: relative;

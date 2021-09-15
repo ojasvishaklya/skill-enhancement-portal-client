@@ -34,6 +34,11 @@ const LoginStyle = styled.form`
         background-color: var(--primary);
      }
     }
+
+    @media only screen and  (max-width: 768px){
+        margin-top: 5rem;
+        width: 80%;
+    }
  `;
 
 
@@ -66,26 +71,27 @@ export default function LoginForm() {
             "password": password
 
         }
-        const res = await axio.post("/auth/signin", userReq);
-        console.log(res);
-        if (res.status === 200) {
-            toast.dark(`Successfully signed in for ` + res.data.username, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-            setLoading(false);
+        try {
+            const res = await axio.post("/auth/signin", userReq);
+            console.log(res);
+            if (res.status === 200) {
+                toast.dark(`Successfully signed in for ` + res.data.username, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+                setLoading(false);
 
-            dispatch(login(res.data));
-            localStorage.setItem("user", JSON.stringify(res.data));
-            history.push(`/profile/${res.data.id}`);
-        }
-        else  {
-            
+                dispatch(login(res.data));
+                localStorage.setItem("user", JSON.stringify(res.data));
+                history.push(`/profile/${res.data.id}`);
+            }
+        } catch (e) {
+            setLoading(false);
             toast.error("Invalid username or password", {
                 position: "top-right",
                 autoClose: 5000,
@@ -97,8 +103,11 @@ export default function LoginForm() {
             });
             return;
 
+
         }
-        
+
+
+
 
 
     };

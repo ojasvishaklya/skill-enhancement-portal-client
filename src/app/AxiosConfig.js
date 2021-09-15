@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = "http://localhost:8080";
+const baseURL = "http://172.18.0.2:8080";
 let headers = {};
 const item = localStorage.getItem("user");
 const token = item==null ? null : JSON.parse(item).authToken;

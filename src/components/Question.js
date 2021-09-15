@@ -102,6 +102,24 @@ const QuestionStyles = styled.div`
                 align-items: center;
                 justify-content: space-evenly;
             }
+            .heading{
+                flex-direction: column;
+                .title{
+                    text-align: start;
+                    margin-bottom: 1rem;
+                }
+            }
+            .info{
+                flex-direction: column;
+                .author{
+                    font-size: 2rem;
+                    margin-bottom: 2rem;
+                }
+            }
+            .desc{
+                text-align: start;
+            }
+            
         }
     }
 `;

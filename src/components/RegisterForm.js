@@ -32,6 +32,11 @@ const RegisterFormStyle = styled.form`
         background-color: var(--primary);
      }
     }
+
+    @media only screen and  (max-width: 768px){
+        margin-top: 5rem;
+        width: 80%;
+    }
  `;
 
 
@@ -48,8 +53,21 @@ export default function RegisterForm() {
     const handleSubmit = (e) => {
         console.log("here")
         e.preventDefault();
+        if(password.length<6){
+            toast.error("Password must be atleast 6 characters long", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            return;
+        }
+
         setLoading(true);
-        toast.dark(`Trying to sign in`, {
+        toast.dark(`Trying to sign up`, {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: false,
@@ -105,8 +123,9 @@ export default function RegisterForm() {
                         type="text"
                         id="username"
                         name="username"
+                        placeholder="Maximum 20 chars"
                         value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        onChange={(e) => {setUsername(e.target.value.substr(0,Math.min(20,e.target.value.length)))}}
                         required
                     />
                 </label>
@@ -132,6 +151,7 @@ export default function RegisterForm() {
                         id="password"
                         name="password"
                         value={password}
+                        placeholder="Minimum 6 chars"
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
@@ -141,7 +161,7 @@ export default function RegisterForm() {
                 <label htmlFor="github">
                     Github url
                     <input
-                        type="link"
+                        type="url"
                         id="github"
                         name="github"
                         value={github}
@@ -155,7 +175,7 @@ export default function RegisterForm() {
                 <label htmlFor="linkedin">
                     Linkedin url
                     <input
-                        type="link"
+                        type="url"
                         id="linkedin"
                         name="linkedin"
                         value={linkedin}

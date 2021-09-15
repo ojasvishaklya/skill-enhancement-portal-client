@@ -152,8 +152,7 @@ export default function EditUserForm({
                         name="e-password"
                         value={e_password}
                         onChange={(e) => { setE_password(e.target.value) }}
-                        placeholder="required"
-                        required
+                        placeholder="only required for password update"
                     />
                 </label>
             </div>

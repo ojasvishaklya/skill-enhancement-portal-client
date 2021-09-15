@@ -8,7 +8,8 @@ const HStyle = styled.div`
   line-height: 1.3em;
   color:var(--text);
   @media only screen and (max-width: 768px) {
-    font-size: 1.5rem;
+    font-size: 2rem;
+    text-align: center;
   }
   hr{
     margin-top: 1rem;

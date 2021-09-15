@@ -23,15 +23,23 @@ const UserStyles = styled.div`
         display: flex;
         font-size: 2rem;
         gap: 5rem;
-        .name{
-            padding: 0.2rem 0.5rem;
-            border-radius: 5px;
-        }
+
         .points{
             color:gold
         }
     }
-
+@media only screen and (max-width: 768px){
+    .top{
+        display: flex;
+        font-size: 2rem;
+        gap: unset;
+        justify-content: space-around;
+  
+        .points{
+            color:gold
+        }
+    }
+}
 `;
 function UserMin({
     username = "Ojasvi Shaklya",

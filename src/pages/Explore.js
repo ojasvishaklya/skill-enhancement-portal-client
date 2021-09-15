@@ -25,13 +25,23 @@ const ExploreStyles = styled.div`
         right: 20%;
       }
     }
+@media only screen and (max-width: 768px){
+  .container{
+      .fab{
+        position: absolute;
+        top: 80vh;
+        right: 0;
+      }
+    }
 
+}
 `;
 
 export default function Explore() {
 
   const [list, setList] = useState([]);
   const [questionList, setQuestionList] = useState([]);
+  const [stack, setStack] = useState([]);
   const [userList, setUserList] = useState([]);
   const user = useSelector(selectUser);
   const history=useHistory();
@@ -62,6 +72,7 @@ export default function Explore() {
         <SearchBar
           setUserList={setUserList}
           setQuestionList={setQuestionList}
+          setStack={setStack}
           search={search} setSearch={setSearch} />
         {
           search.trending &&
@@ -77,6 +88,14 @@ export default function Explore() {
           search.question &&
           <>
             <Header text="Search Results" />
+            {questionList.length ? <Questions list={questionList} />
+              : <div />}
+          </>
+        }
+                {
+          search.question && stack.length &&
+          <>
+            <Header text="Stack Overflow Results" />
             {questionList.length ? <Questions list={questionList} />
               : <div />}
           </>
@@ -99,7 +118,7 @@ export default function Explore() {
           <Button btnText="Create question +" outline={false} />
         </div>
       </div>
-      <Modal width={"70%"} visible={modal} className="modal" onClickAway={() => setModal(false)}>
+      <Modal width={"700px"} visible={modal} className="modal" onClickAway={() => setModal(false)}>
         <CreateQuestionForm />
       </Modal>
 

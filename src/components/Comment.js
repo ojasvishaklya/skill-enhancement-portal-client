@@ -23,7 +23,6 @@ const CommentStyles = styled.div`
         align-items: center;
         justify-content: flex-start;
         .select-answer{
-            height: 100%;
             background-color: green;
             font-size: 1.5rem;
             border-radius: 5px;
@@ -84,6 +83,7 @@ const CommentStyles = styled.div`
             text-align: center;
             .text{
                 margin-top:1rem;
+                text-align: start;
             }
             .tag{
                 background-color: var(--primary);
@@ -108,7 +108,41 @@ const CommentStyles = styled.div`
     }
 
     }
+    @media only screen and (max-width: 768px){
+        .question-section{
+            flex-direction: column-reverse;
+            width: 100%;
+            .vote-section{
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-evenly;
+            }
+            .heading{
+                flex-direction: column;
+                .title{
+                    text-align: start;
+                    margin-bottom: 1rem;
+                }
+                .text{
+                    text-align: start;
+                    margin-bottom: 1rem;
 
+                }
+            }
+            .info{
+                flex-direction: column;
+                .author{
+                    font-size: 2rem;
+                    margin-bottom: 2rem;
+                }
+            }
+            .select-answer{
+                width: max-content;
+            }
+
+            
+        }
+    }
     
 `;
 export default function Comment({
