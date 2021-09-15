@@ -6,6 +6,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import Loader from "react-loader-spinner";
 import axio from '../app/AxiosConfig';
 import { useHistory } from 'react-router';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { selectUser } from '../features/userSlice';
+import { login } from '../features/userSlice';
+
 
 
 const EditFormStyle = styled.form`
@@ -37,7 +42,7 @@ const EditFormStyle = styled.form`
 
 export default function EditUserForm({
     userProfile
-    
+
 }) {
     const [loading, setLoading] = useState(false);
     const [name, setName] = useState(userProfile.name);
@@ -45,9 +50,11 @@ export default function EditUserForm({
     const [e_password, setE_password] = useState("");
     const [n_password, setN_password] = useState("");
     const [github, setGithub] = useState(userProfile.github);
-    const history= useHistory()
+    const history = useHistory();
+    const user = useSelector(selectUser);
+    const dispatch = useDispatch();
 
-    const handleSubmit =async  (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         toast.dark(`Updating user information`, {
@@ -60,20 +67,20 @@ export default function EditUserForm({
             progress: undefined,
         });
         const userReq = {
-            "linkedin":linkedin,
+            "linkedin": linkedin,
             "github": github,
             "username": name,
-            "e_password":e_password,
-            "n_password":n_password,
-            "email":userProfile.email
+            "e_password": e_password,
+            "n_password": n_password,
+            "email": userProfile.email
         }
-       const res= await axio.put("/users/profile/", userReq);
-       
-       console.log(res);
-        history.push("/profile/"+userProfile.id)
+        const res = await axio.put("/users/update/", userReq);
+        user.username=name;
+        dispatch(login(user));
+        localStorage.setItem("user", JSON.stringify(user));
+
+        history.push("/profile/" + userProfile.id)
         setLoading(false);
-
-
 
     };
 
@@ -89,7 +96,7 @@ export default function EditUserForm({
                         id="username"
                         name="username"
                         value={name}
-                        onChange={(e) => { setName(e.target.value)}}
+                        onChange={(e) => { setName(e.target.value) }}
                         required
                     />
                 </label>
@@ -102,7 +109,7 @@ export default function EditUserForm({
                         id="github"
                         name="github"
                         value={github}
-                        onChange={(e) => { setGithub(e.target.value)}
+                        onChange={(e) => { setGithub(e.target.value) }
                         }
                         placeholder="optional"
                     />
@@ -117,7 +124,7 @@ export default function EditUserForm({
                         id="linkedin"
                         name="linkedin"
                         value={linkedin}
-                        onChange={(e) => { setLinkedin(e.target.value)}}
+                        onChange={(e) => { setLinkedin(e.target.value) }}
                         placeholder="optional"
                     />
                 </label>
@@ -131,7 +138,7 @@ export default function EditUserForm({
                         id="n-password"
                         name="n-password"
                         value={n_password}
-                        onChange={(e) => { setN_password(e.target.value)}}
+                        onChange={(e) => { setN_password(e.target.value) }}
                         placeholder="optional"
                     />
                 </label>
@@ -144,7 +151,7 @@ export default function EditUserForm({
                         id="e-password"
                         name="e-password"
                         value={e_password}
-                        onChange={(e) => {setE_password(e.target.value) }}
+                        onChange={(e) => { setE_password(e.target.value) }}
                         placeholder="required"
                         required
                     />

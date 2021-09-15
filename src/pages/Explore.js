@@ -21,7 +21,7 @@ const ExploreStyles = styled.div`
     .container{
       .fab{
         position: absolute;
-        top: 75%;
+        top: 70vh;
         right: 20%;
       }
     }

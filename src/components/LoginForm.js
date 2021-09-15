@@ -7,7 +7,7 @@ import Loader from "react-loader-spinner";
 import axio from '../app/AxiosConfig';
 import { useHistory } from "react-router-dom";
 import { useDispatch } from 'react-redux';
-import {login} from '../features/userSlice'
+import { login } from '../features/userSlice'
 
 
 
@@ -46,7 +46,7 @@ export default function LoginForm() {
     const dispatch = useDispatch();
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
 
 
         e.preventDefault();
@@ -66,35 +66,39 @@ export default function LoginForm() {
             "password": password
 
         }
-         axio.post("/auth/signin", userReq)
-            .then(function (response) {
-                console.log(response);
-                toast.dark(`Successfully signed in for `+response.data.username, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-                setLoading(false);
-                dispatch(login(response.data));
-                localStorage.setItem("user",JSON.stringify(response.data));
-                history.push(`/profile/${response.data.id}`);
-
-            }, function (error) {
-                toast.error("Invalid username or password", {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-                setLoading(false);
+        const res = await axio.post("/auth/signin", userReq);
+        console.log(res);
+        if (res.status === 200) {
+            toast.dark(`Successfully signed in for ` + res.data.username, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
             });
+            setLoading(false);
+
+            dispatch(login(res.data));
+            localStorage.setItem("user", JSON.stringify(res.data));
+            history.push(`/profile/${res.data.id}`);
+        }
+        else  {
+            
+            toast.error("Invalid username or password", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            return;
+
+        }
+        
 
 
     };

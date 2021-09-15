@@ -12,7 +12,7 @@ import MyLoader from '../components/MyLoader';
 import Modal from 'react-awesome-modal';
 import EditUserForm from '../components/EditUserForm';
 import Users from '../components/Users';
-
+import { useHistory } from 'react-router';
 
 
 const ProfileStyles = styled.div`
@@ -99,19 +99,61 @@ export default function Profile() {
   const isMe = user != null && id === user.id;
   const [loading, setLoading] = useState(true);
   const [userProfile, setUserProfile] = useState({});
-  const [modal, setModal] = useState(false)
+  const [modal, setModal] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isSpammed, setIsSpammed] = useState(false);
+  const history=useHistory();
 
 
+  const spamUser = async () => {
+    if (!user) {
+      history.push("/login");
+      return;
+  }
+    console.log("here")
+    setIsSpammed(true);
+
+    const res = await axio.post("/spam/" + userProfile.id);
+  }
+  const followUser = async () => {
+    if (!user) {
+      history.push("/login");
+      return;
+  }
+    setIsFollowing(true);
+
+    const res = await axio.post("/follow/" + userProfile.id);
+  }
 
   useEffect(() => {
     async function fetchData() {
       const res = await axio.get(`/users/profile/${id}/`);
       setUserProfile(res.data);
       console.log(res.data);
+      if(user){
+      for (let i = 0; i < res.data.followersList.length; i++) {
+        const data = (res.data.followersList[i]);
+        console.log(data.id);
+        console.log(user.id);
+        if (data.id == user.id) {
+          setIsFollowing(true);
+        }
+      }
+      for (let i = 0; i < res.data.spamList.length; i++) {
+        const data = (res.data.spamList[i]);
+        console.log(data.id);
+        console.log(user.id);
+        if (data == user.id) {
+          setIsSpammed(true);
+        }
+      }
+    }
       setLoading(false);
     }
 
     fetchData();
+
+
 
     return () => {
     }
@@ -129,7 +171,7 @@ export default function Profile() {
     :
     <ProfileStyles>
       <Modal visible={modal} className="modal" onClickAway={() => setModal(false)}>
-        <EditUserForm userProfile ={userProfile} setUserProfile={setUserProfile}/>
+        <EditUserForm userProfile={userProfile} setUserProfile={setUserProfile} />
       </Modal>
       <div className="container">
         <div className="profile">
@@ -143,8 +185,17 @@ export default function Profile() {
                   console.log("clicked me");
                 }} ><Button btnText={'Edit Profile \u270e'} color="#1E90FF" />
                 </div>}
-                {!isMe && <Button btnText="Follow" color="#1E90FF" />}
-                {!isMe && <Button btnText="Spam" color="red" />}
+                {!isMe ?
+                  !isFollowing ? <div onClick={() => followUser()} > <Button btnText="Follow" color="#1E90FF" /></div>
+                    : <Button btnText="Following" color="#1E90FF" outline={false}/>
+                  : <div />
+                }
+                {!isMe ?
+                  !isSpammed ?
+                    <div onClick={() => spamUser()} ><Button btnText="Spam" color="red" /></div>
+                    : <Button btnText="Spammed" color="red" outline={false} />
+                  : <div />
+                }
               </div>
             }
             <div className="user-info">
@@ -224,7 +275,7 @@ export default function Profile() {
           <div className="right">
             <Header text={info.current} />
             {info.ques && <Questions list={userProfile.questionList} />}
-            {info.comments && <Comments list={userProfile.commentList}/>}
+            {info.comments && <Comments list={userProfile.commentList} />}
             {info.followers && <Users list={userProfile.followersList} />}
             {info.following && <Users list={userProfile.followingList} />}
           </div>

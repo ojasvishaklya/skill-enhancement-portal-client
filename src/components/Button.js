@@ -5,9 +5,10 @@ const ButtonStyle = styled.div`
   
     font-size: 2rem;
     border: ${(props) =>
-    props.outline ? '2px solid var(--primary)' : ''};
+    props.outline ? '2px solid var(--primary)' : '2px solid transparent '};
     padding: 1rem 3rem;
     border-radius: 5px;
+    margin :0 1rem;
     display: inline-block;
     color: var(--text);
     &:hover{

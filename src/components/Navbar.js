@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { logout } from '../features/userSlice';
+import axio from '../app/AxiosConfig';
 
 const NavStyles = styled.div`
 
@@ -218,12 +219,16 @@ export default function Navbar({ toggleTheme, theme }) {
             user ? <li>
               <NavLink
                 to
-                onClick={() => {
+                onClick={async () => {
                   setShowNav(!showNav);
+                  history.push("/");
+                  await axio.post("/auth/logout", {
+                    "refreshToken": user.refreshToken
+                  })
                   localStorage.clear();
                   dispatch(logout());
-                  history.push("/");
-                  // setUser(null);
+
+
                 }}
                 role="button"
                 onKeyDown={() => setShowNav(!showNav)}
