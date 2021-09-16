@@ -74,7 +74,9 @@ const NavStyles = styled.div`
     align-items: flex-start;
     .company{
       img{
-        width: 90%;
+        margin-top: 2rem;
+        margin-left: 2rem;
+        width: 40%;
       }
     }
     .navItems{
@@ -127,7 +129,7 @@ const NavStyles = styled.div`
     .company{
         display: none;
       img{
-        width: 90%;
+        width: 50%;
       }
     }
   }
@@ -157,10 +159,10 @@ export default function Navbar({ toggleTheme, theme }) {
       </div>
 
       <div className="navbar">
-        <div className="company">
+        {theme === "d" && <div className="company">
           <img src={Logo} alt="Skill Enhancement Portal" />
         </div>
-        <ul className={!showNav ? 'navItems hide-item' : 'navItems'}>
+        }<ul className={!showNav ? 'navItems hide-item' : 'navItems'}>
           <div
             className="closeNavIcon"
             onClick={() => setShowNav(!showNav)}

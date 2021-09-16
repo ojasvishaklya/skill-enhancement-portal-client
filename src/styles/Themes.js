@@ -9,27 +9,20 @@
 // --green-1: #88C232;
 // --green-2: #61892F;
 
-export const light1 = {
-    selectText: 'black',
-    selectBackground: '#ffffff',
-    background:'#ffd',
-    primary: '#88C232',
-    secondary: '#240090',
-    text: '#262626',
-  }
-  export const light = {
-    selectText: 'black',
-    selectBackground: '#0097a7',
-    background:'#FFF',
-    primary: '#0077c2',
-    secondary: '#0097a7',
-    text: '#e0f2f1',
-  }
-  export const dark = {
-    selectText: 'white',
-    selectBackground: '#1E1E1E',
-    background:'#1A1A1D',
-    primary: '#950740',
-    secondary: '#66FCF1',
-    text: '#BCB4B4',
-  }
+
+export const light = {
+  selectText: 'black',
+  selectBackground: '#88C232',
+  background: '#FFF',
+  primary: '#0077c2',
+  secondary: '#88C232',
+  text: 'black',
+}
+export const dark = {
+  selectText: 'white',
+  selectBackground: '#1E1E1E',
+  background: '#1A1A1D',
+  primary: '#950740',
+  secondary: '#66FCF1',
+  text: '#BCB4B4',
+}
