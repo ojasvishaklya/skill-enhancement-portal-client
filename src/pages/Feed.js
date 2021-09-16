@@ -37,28 +37,24 @@ const ExploreStyles = styled.div`
 }
 `;
 
-export default function Explore() {
+export default function Feed() {
 
   const [list, setList] = useState([]);
-  const [questionList, setQuestionList] = useState([]);
-  const [stack, setStack] = useState([]);
-  const [userList, setUserList] = useState([]);
+
   const user = useSelector(selectUser);
-  const history=useHistory();
-  const [search, setSearch] = useState({
-    "user": false,
-    "question": false,
-    "trending": true,
-    "current": "Trending Question"
-  });
+  const history = useHistory();
+
   const [modal, setModal] = useState(false);
 
   useEffect(() => {
 
-
+    if (!user) {
+      history.push("/login");
+      return;
+    }
     async function fetchData() {
 
-      const res = await axio.get(`/ques/trending`);
+      const res = await axio.get(`/ques/feed/` + user.id);
       setList(res.data);
       console.log(res.data);
     }
@@ -69,47 +65,15 @@ export default function Explore() {
   return (
     <ExploreStyles>
       <div className="container">
-        <SearchBar
-          setUserList={setUserList}
-          setQuestionList={setQuestionList}
-          setStack={setStack}
-          search={search} setSearch={setSearch} />
         {
-          search.trending &&
           <>
-            <Header text="Trending Questions" />
-            {
-              list.length ? <Questions list={list} />
-                : <div />
-            }
-          </>
-        }
-        {
-          search.question &&
-          <>
-            <Header text="Search Results" />
-            {questionList.length ? <Questions list={questionList} />
-              : <div />}
-          </>
-        }
-                {
-          search.question && stack.length &&
-          <>
-            <Header text="Stack Overflow Results" />
-            {stack.length ? <Questions list={stack} stack/>
-              : <div />}
-          </>
-        }
-        {
-          search.user &&
-          <>
-            <Header text="Search Results" />
-            {userList.length ? <Users list={userList} />
+            <Header text={user ? user.username + "'s feed": "Please Login"} />
+            {list.length ? <Questions list={list} />
               : <div />}
           </>
         }
         <div className="fab" onClick={() => {
-          if(!user){
+          if (!user) {
             history.push("/login");
             return;
           }

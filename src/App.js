@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import QuestionDetails from './pages/QuestionDetails';
 import Notifications from './pages/Notifications';
 import Register from './pages/Register';
+import Feed from './pages/Feed';
 
 export default function App() {
 
@@ -34,6 +35,9 @@ export default function App() {
         <Switch>
           <Route path="/profile/:id">
             <Profile />
+          </Route>
+          <Route path="/feed">
+            <Feed />
           </Route>
           <Route path="/projects">
             <Projects />

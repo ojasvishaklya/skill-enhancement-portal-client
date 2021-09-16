@@ -247,13 +247,13 @@ export default function Comment({
                             </div>
                         }
                     </div>
-                    <Link to={comment.url} target="_blank" rel="noopener noreferrer" >
+                    <a href={comment.url} target="_blank" rel="noopener noreferrer" >
 
                         <div className="url">
                             {comment.url}
 
                         </div>
-                    </Link>
+                    </a>
 
                 </div >
                 {

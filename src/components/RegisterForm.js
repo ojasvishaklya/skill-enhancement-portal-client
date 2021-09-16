@@ -50,10 +50,14 @@ export default function RegisterForm() {
     const [loading, setLoading] = useState(false)
     const history = useHistory();
 
-    const handleSubmit = (e) => {
+    const delay = (m) => {
+        return new Promise((r) => setTimeout(r, m));
+    };
+
+    const handleSubmit = async (e) => {
         console.log("here")
         e.preventDefault();
-        if(password.length<6){
+        if (password.length < 6) {
             toast.error("Password must be atleast 6 characters long", {
                 position: "top-right",
                 autoClose: 5000,
@@ -79,24 +83,38 @@ export default function RegisterForm() {
         const userReq = {
             "email": email,
             "password": password,
-            "linkedin":linkedin,
-            "github":github,
-            "username":username
+            "linkedin": linkedin,
+            "github": github,
+            "username": username
         }
         axio.post("/auth/signup", userReq)
             .then(function (response) {
                 console.log(response);
-                toast.dark(response.data, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-                setLoading(false);
-                history.push("/login");
+                if (response.data === "success") {
+                    toast.dark("USer Profile Created Successfully", {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                    setLoading(false);
+                    history.push("/login");
+
+                } else if (response.data === "exists") {
+                    toast.error("A user with same email already exists", {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                    setLoading(false);
+                }
             }, function (error) {
                 toast.error(error.text, {
                     position: "top-right",
@@ -125,7 +143,7 @@ export default function RegisterForm() {
                         name="username"
                         placeholder="Maximum 20 chars"
                         value={username}
-                        onChange={(e) => {setUsername(e.target.value.substr(0,Math.min(20,e.target.value.length)))}}
+                        onChange={(e) => { setUsername(e.target.value.substr(0, Math.min(20, e.target.value.length))) }}
                         required
                     />
                 </label>
@@ -170,7 +188,7 @@ export default function RegisterForm() {
                     />
                 </label>
             </div>
-            
+
             <div className="form-group">
                 <label htmlFor="linkedin">
                     Linkedin url

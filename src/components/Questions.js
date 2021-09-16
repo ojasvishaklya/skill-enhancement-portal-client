@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import Question from './Question'
+import StackQuestion from './StackQuestion';
 
 
 const QuestionsStyles = styled.div`
@@ -12,14 +13,19 @@ const QuestionsStyles = styled.div`
 `;
 
 export default function Questions({
-    list=[]
+    list=[],
+    stack=false
 }) {
     return (
         <QuestionsStyles >
-                {
+                {stack ?
                     list.map((ele)=>{
-                       return <Question question={ele}/>
-                    })
+                       return <StackQuestion question={ele}/>
+                    }) :
+
+                    list.map((ele)=>{
+                        return <Question question={ele}/>
+                     })
                 }
         </QuestionsStyles>
     )
