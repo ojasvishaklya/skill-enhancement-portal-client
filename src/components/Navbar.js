@@ -175,6 +175,20 @@ export default function Navbar({ toggleTheme, theme }) {
               Explore
             </NavLink>
           </li>
+          {
+            user && <li>
+              <NavLink
+                to="/feed"
+                exact
+                onClick={() => setShowNav(!showNav)}
+                role="button"
+                onKeyDown={() => setShowNav(!showNav)}
+                tabIndex={0}
+              >
+                Feed
+              </NavLink>
+            </li>
+          }
           <li>
             <div id="spacer">
             </div>
