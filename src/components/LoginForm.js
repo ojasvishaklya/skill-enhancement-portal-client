@@ -16,6 +16,7 @@ import { login } from '../features/userSlice'
 const LoginStyle = styled.form`
    width: 50%;
    margin :0 auto;
+   padding-top: 5rem;
 
    button[type='submit'] {
      margin-top:2rem;

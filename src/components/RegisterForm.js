@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Loader from "react-loader-spinner";
 import axio from '../app/AxiosConfig';
 import { useHistory } from "react-router-dom";
+import BParticles from './BParticles';
 
 
 
@@ -14,7 +15,7 @@ import { useHistory } from "react-router-dom";
 const RegisterFormStyle = styled.form`
    width: 50%;
    margin :0 auto;
-
+    padding-top: 2rem;
    button[type='submit'] {
      margin-top:2rem;
      width: 100%;
@@ -131,7 +132,7 @@ export default function RegisterForm() {
     };
 
     return (
-
+        
         <RegisterFormStyle onSubmit={(e) => handleSubmit(e)}>
             <ToastContainer className="toast" />
             <div className="form-group">

@@ -151,7 +151,7 @@ export default function Navbar({ toggleTheme, theme }) {
 
       <div className="navbar">
         <div className="company">
-          <img src={Logo} alt="Skill Enhancement Portal" />
+          {/* <img src={Logo} alt="Skill Enhancement Portal" /> */}
         </div>
         <ul className={!showNav ? 'navItems hide-item' : 'navItems'}>
           <div
