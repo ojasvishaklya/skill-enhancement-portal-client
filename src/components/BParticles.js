@@ -1,5 +1,4 @@
 import React from 'react'
-import Particles from 'react-particles-js';
 import styled from 'styled-components';
 
 
@@ -127,7 +126,7 @@ const config = {
 export default function BParticles() {
     return (
         <ParticleStyles>
-            <Particles className="canvas" params={config} />
+
         </ParticleStyles>
     )
 }
