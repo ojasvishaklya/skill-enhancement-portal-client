@@ -1,5 +1,5 @@
 import axios from 'axios';
-const vm = "http://localhost";
+const vm = "http://54.227.98.52";
 const backendPort = 8080
 const baseURL = vm + ":" + backendPort;
 let headers = {};
